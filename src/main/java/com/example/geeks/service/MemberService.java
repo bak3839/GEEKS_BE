@@ -2,6 +2,7 @@ package com.example.geeks.service;
 
 import com.example.geeks.domain.Member;
 import com.example.geeks.repository.MemberRepository;
+import com.example.geeks.requestDto.RegisterDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,4 +20,15 @@ public class MemberService {
     public boolean availableEmail(String email) {
         return memberRepository.findByEmail(email).isEmpty();
     }
+
+    public boolean availableNickname(String nickname) {
+        return memberRepository.findByNickname(nickname).isEmpty();
+    }
+
+
+    @Transactional
+    public void join(Member member) {
+        memberRepository.save(member);
+    }
+
 }
