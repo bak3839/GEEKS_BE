@@ -19,7 +19,7 @@ public class MemberController {
 
     private final BCryptPasswordEncoder encoder;
 
-    @PostMapping("/register")
+    @GetMapping("/register")
     public String register(HttpSession session) {
         Member member = Member.builder()
                 .nickname((String) session.getAttribute("nickname"))

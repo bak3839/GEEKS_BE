@@ -21,11 +21,13 @@ public class MailController {
     private final MailAuthService emailAuthService;
 
     @GetMapping("/send")
-    public String mailConfirm(@RequestParam String email) throws Exception{
+    public String mailConfirm(@RequestParam String email, HttpSession session) throws Exception{
         // 비어있으면 true 있다면 false
         boolean pass = memberService.availableEmail(email);
 
         if(!pass) return "duplicate";
+
+        session.setAttribute("email", email);
 
         String code = mailService.sendSimpleMessage(email);
         System.out.println("인증코드 : " + code);
@@ -34,11 +36,13 @@ public class MailController {
         return code;
     }
 
-    @PostMapping("/auth")
-    public String mailAuth(@RequestBody MailAuthDto dto, HttpSession session) {
+    @GetMapping("/auth")
+    public String mailAuth(@RequestParam String code, HttpSession session) {
+        String email = (String) session.getAttribute("email");
+
         try {
-            if(emailAuthService.getData(dto.getEmail()).equals(dto.getCode())) {
-                session.setAttribute("nickname", dto.getEmail());
+            if(emailAuthService.getData(email).equals(code)) {
+                session.setAttribute("nickname", email);
                 return "success!";
             } else {
                 return "false";
